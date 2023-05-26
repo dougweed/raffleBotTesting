@@ -6,4 +6,3 @@ if __name__ == '__main__':
     token = os.getenv('RaffleBotToken')
     bot = RaffleBot(token)
     bot.run()
-
