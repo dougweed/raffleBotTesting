@@ -1,5 +1,4 @@
 import logging
-
 import discord
 
 
@@ -23,9 +22,7 @@ class RaffleJoinModal(discord.ui.Modal, title="Join the raffle!"):
         placeholder="Please describe your goals and concerns with this coaching session"
     )
 
-
     async def on_submit(self, interaction: discord.Interaction):
-
         # send the embed containing description and raffle end time as a response to the start command
         await interaction.response.send_message(f"You have joined the raffle, {interaction.user.mention}!",
                                                 ephemeral=True)
@@ -34,3 +31,4 @@ class RaffleJoinModal(discord.ui.Modal, title="Join the raffle!"):
 
     async def on_error(self, interaction: discord.Interaction, error):
         logging.error("Modal Error")
+        logging.info(f"User tried entering as link: {self.vod}")
