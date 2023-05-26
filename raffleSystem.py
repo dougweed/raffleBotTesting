@@ -43,9 +43,11 @@ class RaffleSystem:
     async def end_raffle(self, raffle_id):
         # pick a winner and send a message announcing the winner
         raffle = self.raffles[raffle_id]
-        winner, vod = raffle.pick_winner()
+        winner = raffle.pick_winner()
+        vod = raffle.get_vod(winner.id)
+        notes = raffle.get_notes(winner.id)
         interaction = raffle.interaction
-        # winner can be returned as none, so check first
+        # winner can be returned as none if no entries, so check first
         if winner:
             await interaction.followup.send(f"Winner is {winner.mention}!")
         else:
@@ -56,16 +58,28 @@ class RaffleSystem:
         if self.category:
             guild = interaction.guild
             category = self.client.get_channel(self.category)
+            # permissions must be overwritten after making the channel, or they will not inherit perms from category
             channel = await guild.create_text_channel(f"{winner.name}'s raffle!", category=category)
             await channel.set_permissions(winner, read_messages=True, send_messages=True)
             await channel.send(f"Congratulations {winner.mention} on winning the raffle!")
             await channel.send(f"Vod link: {vod}")
+            await channel.send(f"{winner.name} has added the following notes:")
+
+            embed = discord.Embed(
+                title="Notes",
+                description=notes,
+                colour=discord.Colour.blurple()
+            )
+
+            await channel.send(embed=embed)
+
         self.raffles.pop(raffle_id)
 
-    def enter_raffle(self, raffle_id, user, vod):
+    def enter_raffle(self, raffle_id, user, vod, notes):
         raffle = self.raffles[raffle_id]
         raffle.add_user(user)
         raffle.add_vod(user, vod)
+        raffle.add_notes(user, notes)
 
     def save_settings(self):
         fp = open('settings.txt', 'w')

@@ -17,10 +17,10 @@ class RaffleJoinModal(discord.ui.Modal, title="Join the raffle!"):
     )
 
     notes = discord.ui.TextInput(
-        style=discord.TextStyle.short,
-        label="Noted",
+        style=discord.TextStyle.long,
+        label="Notes",
         required=False,
-        placeholder=""
+        placeholder="Please describe your goals and concerns with this coaching session"
     )
 
 
@@ -30,7 +30,7 @@ class RaffleJoinModal(discord.ui.Modal, title="Join the raffle!"):
         await interaction.response.send_message(f"You have joined the raffle, {interaction.user.mention}!",
                                                 ephemeral=True)
 
-        self.raffleSystem.enter_raffle(self.id, interaction.user, self.vod)
+        self.raffleSystem.enter_raffle(self.id, interaction.user, self.vod, self.notes)
 
     async def on_error(self, interaction: discord.Interaction, error):
         logging.error("Modal Error")

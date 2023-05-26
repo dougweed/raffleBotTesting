@@ -13,6 +13,7 @@ class Raffle:
         # ties user's unique id to a user object
         self.users = {}
         self.vods = {}
+        self.notes = {}
         self.interaction = interaction
 
     def add_user(self, user):
@@ -27,7 +28,16 @@ class Raffle:
     def add_vod(self, user, link: str):
         self.vods[user.id] = link
 
+    def add_notes(self, user, notes):
+        self.notes[user.id] = notes
 
+    def get_vod(self, user_id):
+        return self.vods[user_id]
+
+    def get_notes(self, user_id):
+        return self.notes[user_id]
+
+    # returns winner as discord member object
     def pick_winner(self):
         # no one entered our raffle :(
         if not self.raffle.keys():
@@ -38,4 +48,4 @@ class Raffle:
             raffle_list.extend(user_entries)
         winner_id = random.choice(raffle_list)
         winner = self.users[winner_id]
-        return winner, self.vods[winner_id]
+        return winner
